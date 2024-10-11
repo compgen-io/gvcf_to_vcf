@@ -8,10 +8,28 @@ Additionally, in some GVCF files, GT is not calculated. This script will optiona
 
 ## Installation
 
-This script expects to run in the context of virtualenv container (venv). In particular, the script requires the installation of the `pysam` library. The library is used to read reference values from a genomic FASTA file. The script *can* run in any environment that has this library installed. It *should* be run in the context of a venv, so the library installation is separated from the global Python installation.
+This script expects to run in the context of virtualenv container (venv). In particular, the script requires the installation of the `pysam` library. The library is used to read reference values from a genomic FASTA file. The script *can* run in any environment that has this library installed; however, it *should* be run in the context of a venv, so the library installation is separated from the global Python installation.
 
 Example setup:
 
     $ python3 -m venv .venv
     $ .venv/bin/pip install -r requirements.txt
     $ .venv/bin/python3 gvcf_to_vcf.py {args} input.g.vcf.gz ref.fasta | bgzip > new.vcf.gz
+
+## Usage
+
+    Usage: gvcf_to_vcf.py {opts} input.gvcf genome.fa
+    
+      Options:
+        --min-dp val            Minimum DP to report (default: 10)
+    
+        --recalc-gt             Recalculate the GT field based on AD values (see below)
+        --min-gt-count val      Minimum reads to support a GT call (default: 1)
+        --min-gt-af val         Minumum allele-frequency for a GT call (default: 0.1)
+                         
+        --skip-ambiguous        Skip writing reference bases that are "N"
+        --only-alt              Only write out positions with a variant call
+        --only-passing          Only write out positions that meet minumum DP
+                                (default: write out lines with FILTERs set)
+
+> Note: the reference genome FASTA file should be indexed with `samtools faidx`
