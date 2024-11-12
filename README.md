@@ -17,7 +17,7 @@ Example setup:
     $ gvcf_to_vcf {args} input.g.vcf.gz ref.fasta | bgzip > new.vcf.gz
 
 
-Note: the shell script `gvcf_to_vcf` will automatically look for a venv in the directory `./.venv` 
+> Note: the shell script `gvcf_to_vcf` will automatically look for a venv in the directory `./.venv` 
 
 ## Usage
 
