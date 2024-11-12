@@ -216,7 +216,7 @@ def convert_gvcf(fname, ref_fname, min_dp, recalc_gt, min_gt_count, min_gt_af, o
                 # if the MIN_DP is above DP threshold, write it
 
                 if not only_passing or int(format_kv['MIN_DP']) >= min_dp:
-                    write_ref_block(chrom, pos, gvcf_block_end, int(format_kv['MIN_DP']), fasta, skip_ambiguous, int(format_kv['MIN_DP']) < min_dp)
+                    write_ref_block(chrom, pos, gvcf_block_end, int(format_kv['DP']), int(format_kv['MIN_DP']), fasta, skip_ambiguous, int(format_kv['MIN_DP']) < min_dp)
         else:
             # We aren't in a homozygous ref block...
 
@@ -405,7 +405,7 @@ def write_ref_single(chrom, pos, id, refbase, qual, filter, info, format, format
     sys.stdout.write('%s\n' % '\t'.join([str(x) for x in outcols]))
 
 
-def write_ref_block(chrom, pos, end, min_dp, fasta, skip_ambiguous, is_lowdepth):
+def write_ref_block(chrom, pos, end, dp, min_dp, fasta, skip_ambiguous, is_lowdepth):
     for i in range(pos, end+1):
         refbase = fasta.fetch(chrom, i-1, i)
         if skip_ambiguous and refbase in ['N', 'n', '.']:
@@ -416,7 +416,10 @@ def write_ref_block(chrom, pos, end, min_dp, fasta, skip_ambiguous, is_lowdepth)
             filter = 'LowDepth'
 
         # hard-code GT as "0/0", and add MIN_DP to signify that the DP here is at least MIN_DP
-        outcols = [chrom, i, '.', refbase, '.', '.', filter, '.', 'GT:MIN_DP', '0/0:%s' % min_dp]
+        if pos == i and dp != '':
+            outcols = [chrom, i, '.', refbase, '.', '.', filter, '.', 'GT:DP:MIN_DP', '0/0:%s:%s' % (dp, min_dp)]
+        else:
+            outcols = [chrom, i, '.', refbase, '.', '.', filter, '.', 'GT:MIN_DP', '0/0:%s' % min_dp]
         sys.stdout.write('%s\n' % '\t'.join([str(x) for x in outcols]))
 
 
