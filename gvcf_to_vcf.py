@@ -45,7 +45,7 @@ Usage: gvcf_to_vcf.py {opts} input.gvcf genome.fa
                      
     --skip-ambiguous        Skip writing reference bases that are "N"
     --only-alt              Only write out positions with a variant call
-    --only-passing          Only write out positions that meet minumum thresholds above
+    --only-passing          Only write out positions that meet minumum DP threshold
                             (default: write out lines with FILTERs set)
                      
 """)
